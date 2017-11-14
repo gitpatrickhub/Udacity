@@ -27,7 +27,7 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set any additional class parameters as needed
-        self.n_trials = 1       # Number of trials, initialized to 1 increment in reset()
+        self.n_trials = 0     # Number of trials, initialized to 0 increment in reset()
 
     def reset(self, destination=None, testing=False):
         """ The reset function is called at the beginning of each trial.
@@ -43,13 +43,14 @@ class LearningAgent(Agent):
         # Update epsilon using a decay function of your choice
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
-        t = n_trials + 1
         
-        if testing == True:
-            epsilon == 0,
-            alpha == 0
+        self.n_trials += 1     # increment the trial number
+        
+        if testing == True:     # check if testing
+            self.epsilon = 0    # set epsilon to 0
+            self.alpha = 0      # set alpha to 0
         else:
-                
+            self.epsilon = self.epsilon  - 0.05     # update epsilon using the decay function from the notebook
 
         return None
 
@@ -73,7 +74,7 @@ class LearningAgent(Agent):
         # With the hand-engineered features, this learning process gets entirely negated.
         
         # Set 'state' as a tuple of relevant data for the agent        
-        state = None
+        state = ((waypoint, 'left', 'right', 'forward'), (inputs['light'], 'red', 'green'), (inputs['left'], 'left', 'right', 'forward', None), (inputs['oncoming'], 'left', 'right', 'forward', None))
 
         return state
 
@@ -87,7 +88,7 @@ class LearningAgent(Agent):
         ###########
         # Calculate the maximum Q-value of all actions for a given state
 
-        maxQ = None
+        maxQ = max(self.Q[state].values())     # get max Q-value for given state
 
         return maxQ 
 
@@ -101,6 +102,14 @@ class LearningAgent(Agent):
         # When learning, check if the 'state' is not in the Q-table
         # If it is not, create a new dictionary for that state
         #   Then, for each action available, set the initial Q-value to 0.0
+        
+        if self.learning == True:     # check if learning is set to True
+            if self.Q.get(state) == None:     # if learning is True check if the state is in the Q-table
+                self.Q[state] = {}      # create new dictionary for the state
+                for action in self.valid_actions:     # for each valid action initialize Q-value to 0.0
+                    self.Q[state][action] = 0.0     # initialize Q-value to 0.0 for state action
+                    
+        
 
         return
 
@@ -121,8 +130,14 @@ class LearningAgent(Agent):
         # When learning, choose a random action with 'epsilon' probability
         # Otherwise, choose an action with the highest Q-value for the current state
         # Be sure that when choosing an action with highest Q-value that you randomly select between actions that "tie".
-        action = random.choice(self.valid_actions)
         
+        if self.learning == False:     # check if not learning
+            action = random.choice(self.valid_actions)      # set action to a random valid action
+        else:
+            if len(self.get_maxQ) > 1:     # check if more than 1 action returned
+                action = random.choice(self.get_maxQ())     # set action to randomly selected action with max Q-value
+            else:
+                action = self.get_maxQ())     # set action to max Q-value
         return action
 
 
