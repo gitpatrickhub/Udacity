@@ -46,7 +46,7 @@ class LearningAgent(Agent):
         
         self.n_trials += 1     # increment the trial number
         
-        if testing == True:     # check if testing
+        if testing:     # check if testing
             self.epsilon = 0    # set epsilon to 0
             self.alpha = 0      # set alpha to 0
         else:
@@ -87,7 +87,7 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Calculate the maximum Q-value of all actions for a given state
-
+        print 'Q values: {}'.format(self.Q[state].values())      # check values of Q
         maxQ = max(self.Q[state].values())     # get max Q-value for given state
 
         return maxQ 
@@ -103,14 +103,14 @@ class LearningAgent(Agent):
         # If it is not, create a new dictionary for that state
         #   Then, for each action available, set the initial Q-value to 0.0
         
-        if self.learning == True:     # check if learning is set to True
+        if self.learning:     # check if learning is set to True
             if self.Q.get(state) == None:     # if learning is True check if the state is in the Q-table
                 self.Q[state] = {}      # create new dictionary for the state
                 for action in self.valid_actions:     # for each valid action initialize Q-value to 0.0
                     self.Q[state][action] = 0.0     # initialize Q-value to 0.0 for state action
                     
         
-
+        print 'Structure of Q: {}'.format(self.Q)     # check structure of Q dictionary
         return
 
 
@@ -131,13 +131,22 @@ class LearningAgent(Agent):
         # Otherwise, choose an action with the highest Q-value for the current state
         # Be sure that when choosing an action with highest Q-value that you randomly select between actions that "tie".
         
-        if self.learning == False:     # check if not learning
-            action = random.choice(self.valid_actions)      # set action to a random valid action
-        else:
-            if len(self.get_maxQ) > 1:     # check if more than 1 action returned
-                action = random.choice(self.get_maxQ())     # set action to randomly selected action with max Q-value
+        if self.learning:     # check if  learning
+            if self.epsilon > random.random():     #  implement epsilon probability
+                action = random.choice(self.valid_actions)     # set action to random valid action
             else:
-                action = self.get_maxQ())     # set action to max Q-value
+                action_list = []
+                for action in self.Q[self.state]:
+                    if self.get_maxQ(state) == self.Q[state][action]:
+                        action_list.append(action)
+                
+                #if len(self.get_maxQ(self.state)) > 1:     # check if more than 1 action returned
+             #   action = random.choice(self.get_maxQ(state))     # set action to randomly selected action with max Q-value
+                #else:
+                print 'Action list: {}'.format(action_list)
+                action = random.choice(action_list)     # set action to max Q-value
+        else:
+            action = random.choice(self.valid_actions)     # when not learning set action to random valid action
         return action
 
 
@@ -151,7 +160,11 @@ class LearningAgent(Agent):
         ###########
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
-
+        
+        if self.learning == True:     # check if learning
+            self.Q[state][action] = ((1 - self.alpha)*self.Q[state][action]) + (self.alpha * reward)      # implement value iteration update rule
+            
+            
         return
 
 
@@ -179,7 +192,7 @@ def run():
     #   verbose     - set to True to display additional output from the simulation
     #   num_dummies - discrete number of dummy agents in the environment, default is 100
     #   grid_size   - discrete number of intersections (columns, rows), default is (8, 6)
-    env = Environment()
+    env = Environment(verbose = True)
     
     ##############
     # Create the driving agent
@@ -187,7 +200,7 @@ def run():
     #   learning   - set to True to force the driving agent to use Q-learning
     #    * epsilon - continuous value for the exploration factor, default is 1
     #    * alpha   - continuous value for the learning rate, default is 0.5
-    agent = env.create_agent(LearningAgent, Learning = True)
+    agent = env.create_agent(LearningAgent, learning = True)     # changed 'Learning' to 'learning'
     
     ##############
     # Follow the driving agent
