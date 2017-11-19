@@ -1,0 +1,2 @@
+Simulator.__init__(): Error initializing GUI objects; display disabled.
+error: Couldn't open images\logo.png
