@@ -16427,7 +16427,7 @@ The below table shows the optimal policy for each given state;</p>
  light = green
  left = forward
  oncoming = right</p>
-<p>The highest Q-value is right, but the waypoint is left. In this state, the optimal policy would be None, as turning left while another car is turning the same direction may cause an accident. This may be due to the number of trials (300) conducted versus the number of states (96). The Q-values for forward and left are 0.0, which is what they how each was intialized.</p>
+<p>The highest Q-value is right, but the waypoint is left. In this state, the optimal policy would be forward, as turning left while another car is turning the same direction may cause an accident and none with a green light will result in negative rewards. This may be due to the number of trials (300) conducted versus the number of states (96). The Q-values for forward and left are 0.0, which is what they how each was intialized.</p>
 <p>Below is an example of the optimal policy from the Q-table;</p>
 <p>('left', 'red', 'right', 'left')
  -- forward : -2.72
@@ -16467,7 +16467,7 @@ The below table shows the optimal policy for each given state;</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<p>I'll work on this during the review.</p>
+<h5 id="There-are-two-characteristics-about-the-project-that-invalidate-the-use-of-future-rewards-in-the-Q-Learning-algorithm.-One-characteristic-has-to-do-with-the-Smartcab-itself,-and-the-other-has-to-do-with-the-environment.-Can-you-figure-out-what-they-are-and-why-future-rewards-won't-work-for-this-project?">There are two characteristics about the project that invalidate the use of future rewards in the Q-Learning algorithm. One characteristic has to do with the Smartcab itself, and the other has to do with the environment. Can you figure out what they are and why future rewards won't work for this project?<a class="anchor-link" href="#There-are-two-characteristics-about-the-project-that-invalidate-the-use-of-future-rewards-in-the-Q-Learning-algorithm.-One-characteristic-has-to-do-with-the-Smartcab-itself,-and-the-other-has-to-do-with-the-environment.-Can-you-figure-out-what-they-are-and-why-future-rewards-won't-work-for-this-project?">&#182;</a></h5><p>All of the intersections are the exact same to the smartcab, as each one is evaluated independently under the same rules. The planner/waypoint dictates the direction the smartcab should travel, so the smartcab doesn't need to learn efficiency through rewards/future rewards. The environment grid is unknown to the smartcab and does not understand it's relationship/distance to the destination.</p>
 
 </div>
 </div>
